@@ -6,21 +6,18 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
-#include "Matrix.h"
+#include <cstdio>
+#include "Scheme.h"
 
 int main()
 {
-	Matrix m(2,2);
-	printf("a\n");
-	m.input();
-	printf("a\n");
-	Matrix q;
-	printf("a\n");
-	q=m;
-	printf("a\n");
-	Matrix r=(q*m);
-	printf("a\n");
-	r.print();
-	printf("%d\n",r(1,1));
+	Scheme e(4,32,7);
+	Matrix S(2,2);
+	S.input();
+	e.setkey(S);
+	Matrix c(2,1);
+	c.input();
+	Matrix x=e.Decrypt(c);
+	x.print();
 	return 0;
 }
