@@ -106,11 +106,11 @@ const Matrix Matrix::identity()
 	return *this;
 }
 
-const Matrix Matrix::random(int q)
+const Matrix Matrix::random(int max,int min)
 {
 	srand(time(NULL));
 	for(int i=0;i<size;i++)
-		p[i]=rand()%q;
+		p[i]=(rand()%max)+min;
 	return *this;
 }
 
@@ -154,9 +154,69 @@ const Matrix Matrix::happend(const Matrix &m1) const
 	}
 }
 
+const Matrix Matrix::getT() const
+{
+	Matrix T(n,m-n);
+	for(int i=0;i<n;i++)
+		for(int j=n;j<m;j++)
+			T.p[i*T.m+j-n]=p[i*m+j];
+	return T;
+}
+
+const Matrix Matrix::expand(int l) const
+{
+	Matrix res(n,m*l);
+	int *pow2 = new int[l];
+	pow2[0]=1;
+	for(int i=1;i<l;i++)
+		pow2[i]=2*pow2[i-1];
+	
+	for(int i=0;i<size;i++)
+		for(int j=0;j<l;j++)
+			res.p[l*i+j]=p[i]*pow2[j];
+	
+	delete [] pow2;
+	return res;
+}
+
+const Matrix Matrix::binexpand(int l) const
+{
+	Matrix res(n*l,m);
+	int temp;
+	for(int i=0;i<n;i++)
+		for(int j=0;j<m;j++)
+		{
+			temp=p[i*m+j];
+			for(int k=0;k<l;k++)
+			{
+				res.p[(i*l+k)*res.m+j]=temp%2;
+				temp/=2;
+			}
+		}
+	return res;
+}
+
 const Matrix Matrix::operator |(const Matrix &m1) const
 {
-	return ((*this).happend(m1));
+//	return ((*this).happend(m1));
+	if(n!=m1.n)
+	{
+		printf("Cant append horizontally as no. of rows %d and %d don't match\n",n,m1.n);
+		return *this;
+	}
+	else
+	{
+		Matrix res(n,m+m1.m);
+		
+		for(int i=0;i<n;i++)
+		{
+			for(int j=0;j<m;j++)
+				res.p[i*res.m+j]=p[i*m+j];
+			for(int j=0;j<m1.m;j++)
+				res.p[i*res.m+m+j]=m1.p[i*m1.m+j];
+		}
+		return res;
+	}
 }
 
 const Matrix Matrix::operator +(const Matrix &mat) const
@@ -169,6 +229,29 @@ const Matrix Matrix::operator +(const Matrix &mat) const
 		res.p[i] = p[i]+mat.p[i];
 	return res;
 }
+
+const Matrix Matrix::operator -(const Matrix &mat) const
+{
+	Matrix res(n,m);
+//	for(int i=0;i<n;i++)
+//		for(int j=0;j<m;j++)
+//			res.p[i][j] = this->p[i][j]+mat.p[i][j];
+	for(int i=0;i<size;i++)
+		res.p[i] = p[i]-mat.p[i];
+	return res;
+}
+
+//int prod(int x,int n,int q)
+//{
+//        if(n==0)
+//                return 0;
+//        int temp=prod(x,n/2,q);
+//        temp=(temp+temp)%q;
+//        if(n%2==0)
+//                return temp;
+//        else
+//                return ((x+temp)%q);
+//}
 
 const Matrix Matrix::operator *(const Matrix &mat) const
 {
@@ -187,9 +270,18 @@ const Matrix Matrix::operator *(const Matrix &mat) const
 		{
 			sum=0;
 			for(int i=0;i<m;i++)
+//				sum=(sum+prod(p[j*m+i],mat.p[i*mat.m+k],32768))%32768;
 				sum+=p[j*m+i]*mat.p[i*mat.m+k];
 			res.p[j*mat.m+k]=sum;
 		}
+	return res;
+}
+
+const Matrix Matrix::operator *(int a) const
+{
+	Matrix res(n,m);
+	for(int i=0;i<size;i++)
+		res.p[i]=a*p[i];
 	return res;
 }
 
@@ -231,8 +323,15 @@ const Matrix Matrix::operator ~() const
 const Matrix Matrix::operator %(const int q) const
 {
 	Matrix res(n,m);
+	int temp;
 	for(int i=0;i<size;i++)
-		res.p[i]=p[i]%q;
+	{
+		if(p[i]<0)
+			temp=p[i]+(1+(-p[i])/q)*q;
+		else
+			temp=p[i]%q;
+		res.p[i]=temp;
+	}
 	return res;
 }
 
@@ -249,4 +348,4 @@ const Matrix Matrix::operator /(const int w) const	//Rounding division to closes
 	return res;
 }
 
-const int Matrix::operator ()(int i,int j) const {return p[i*m+j];}
+const int Matrix::operator ()(int i,int j) const	{return p[i*m+j];}

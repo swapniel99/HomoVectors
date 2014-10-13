@@ -10,7 +10,7 @@
 
 class Matrix
 {
-protected:
+private:
 	int n,m;
 	int size;//
 //	int **p;
@@ -23,12 +23,17 @@ public:
 	void input();
 	void print() const;
 	const Matrix identity();
-	const Matrix random(int q);
+	const Matrix random(int max,int min=0);
 	const Matrix vappend(const Matrix &m1) const;	//vertical append
 	const Matrix happend(const Matrix &m1) const;	//horizontal append
+	const Matrix getT() const;
+	const Matrix expand(int l) const;
+	const Matrix binexpand(int l) const;
 	const Matrix operator |(const Matrix &m1) const;	//horizontal append
 	const Matrix operator +(const Matrix &m1) const;
+	const Matrix operator -(const Matrix &m1) const;
 	const Matrix operator *(const Matrix &m1) const;
+	const Matrix operator *(int a) const;
 	const Matrix operator =(const Matrix &mat);
 	const Matrix operator ~() const;
 	const Matrix operator %(const int q) const;
