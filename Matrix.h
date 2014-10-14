@@ -35,6 +35,7 @@ public:
 	const Matrix operator *(const Matrix &m1) const;
 	const Matrix operator *(int a) const;
 	const Matrix operator =(const Matrix &mat);
+	bool operator ==(const Matrix &mat) const;
 	const Matrix operator ~() const;
 	const Matrix operator %(const int q) const;
 	const Matrix operator /(const int w) const; //Rounding division to closest number

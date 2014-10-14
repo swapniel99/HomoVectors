@@ -14,11 +14,12 @@ const Matrix makeswitch(const Matrix &S1,const Matrix &S2,int m, int n1, int n2,
 	 int l=(int)ceil(log2(q));
 	 int nl=n1*l;
 	 Matrix A(n2-m,nl);
-	 A.random(q);
+	 A.random(12500000);		// this is just a workaround. need to do modular product i think
 	 Matrix T = S2.getT();
 	 Matrix Sxp = S1.expand(l);
 	 Matrix E(m,nl);
 	 E.random(3,-1);	//Some limit yet to be defined
+	 E.print();
 	 return (((E+Sxp-(T*A)).vappend(A))%q);
 }
 
@@ -56,14 +57,12 @@ void Scheme::printkeys() const
 	M.print();
 }
 
-const Matrix transform(const Matrix &M, const Matrix &c, int q)
-{
-	return ((M*(c.binexpand((int)ceil(log2(q)))))%q);
-}
+const Matrix transform(const Matrix &M, const Matrix &c, int q) {return ((M*(c.binexpand((int)ceil(log2(q)))))%q);}
 
-const Matrix Scheme::Encrypt(const Matrix &x) {return ((M*((x*w).binexpand((int)ceil(log2(q)))))%q);}
+const Matrix Scheme::Encrypt(const Matrix &x) {return transform(M,x*w,q);}
+//		{return ((M*((x*w).binexpand((int)ceil(log2(q)))))%q);}
 
-const Matrix Scheme::Decrypt(const Matrix &c) {return (((S*c)%q)/w);}
+const Matrix Scheme::Decrypt(const Matrix &c) {return ((((S*c)%q)/w)%p);}
 
 const Matrix getswitch(const Scheme &S1,const Scheme &S2)
 {

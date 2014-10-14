@@ -10,6 +10,7 @@
 #include <cmath>
 #include <ctime>
 #include <cstdlib>
+#include <unistd.h>
 #include "Matrix.h"
 //using namespace std;
 
@@ -108,7 +109,10 @@ const Matrix Matrix::identity()
 
 const Matrix Matrix::random(int max,int min)
 {
-	srand(time(NULL));
+	static unsigned int seed=0;
+	seed+=time(NULL);
+//	printf("seed = %u\n",seed);
+	srand(seed);
 	for(int i=0;i<size;i++)
 		p[i]=(rand()%max)+min;
 	return *this;
@@ -307,6 +311,14 @@ const Matrix Matrix::operator =(const Matrix &mat)
 		p[i]=mat.p[i];
 
 	return *this;
+}
+
+bool Matrix::operator ==(const Matrix &mat) const
+{
+	for(int i=0;i<size;i++)
+		if(p[i]!=mat.p[i])
+			return false;
+	return true;
 }
 
 const Matrix Matrix::operator ~() const
