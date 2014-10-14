@@ -79,7 +79,7 @@ void Matrix::input()
 
 void Matrix::print() const
 {
-	printf("[\n");
+	printf("%d x %d\n[\n",n,m);
 	for(int i=0;i<n;i++)
 	{
 		for(int j=0;j<m;j++)
@@ -109,10 +109,13 @@ const Matrix Matrix::identity()
 
 const Matrix Matrix::random(int max,int min)
 {
-	static unsigned int seed=0;
-	seed+=time(NULL);
+	static bool seed=true;
+	if(seed)
+	{
+		srand(time(NULL));
+		seed=false;
+	}
 //	printf("seed = %u\n",seed);
-	srand(seed);
 	for(int i=0;i<size;i++)
 		p[i]=(rand()%max)+min;
 	return *this;

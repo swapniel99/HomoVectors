@@ -18,7 +18,8 @@ const Matrix makeswitch(const Matrix &S1,const Matrix &S2,int m, int n1, int n2,
 	 Matrix T = S2.getT();
 	 Matrix Sxp = S1.expand(l);
 	 Matrix E(m,nl);
-	 E.random(3,-1);	//Some limit yet to be defined
+	 E.random(101,-50);	//Some limit yet to be defined
+	 printf("Error added:\n");
 	 E.print();
 	 return (((E+Sxp-(T*A)).vappend(A))%q);
 }
@@ -51,9 +52,9 @@ void Scheme::setkey(const Matrix &S)
 
 void Scheme::printkeys() const
 {
-	printf("S:\n");
+	printf("Private key S:\n");
 	S.print();
-	printf("M:\n");
+	printf("Public key M:\n");
 	M.print();
 }
 
