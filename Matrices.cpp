@@ -40,7 +40,7 @@ Matrix::Matrix(int n,int m)
 	this->n=n;
 	this->m=m;
 	size=n*m;//
-	p=new int[size]();
+	p=new big[size]();
 //	printf("arg constructor called.");
 }
 
@@ -49,7 +49,7 @@ Matrix::Matrix(const Matrix &m1)
 	n=m1.n;
 	m=m1.m;
 	size=m1.size;//
-	p = new int[size];
+	p = new big[size];
 	
 	for(int i=0;i<size;i++)
 		p[i]=m1.p[i];
@@ -63,7 +63,7 @@ Matrix::~Matrix()
 //	printf("Destructor called.\n");
 }
 
-inline int& Matrix::operator ()(int i,int j) const	{return p[i*m+j];}
+inline big& Matrix::operator ()(int i,int j) const	{return p[i*m+j];}
 //This can be used anywhere, where element is accessed using coordinates. 
 //See a few functions below
 
@@ -71,10 +71,10 @@ void Matrix::input()
 {
 	printf("Provide a %d x %d matrix:\n",n,m);
 	for(int i=0;i<size;i++)
-		scanf("%d",p+i);
+		scanf("%lld",p+i);
 }
 
-void Matrix::set(int i, int j, int val) {(*this)(i,j)=val;}
+void Matrix::set(int i, int j, big val) {(*this)(i,j)=val;}
 
 void Matrix::print() const
 {
@@ -82,7 +82,7 @@ void Matrix::print() const
 	for(int i=0;i<n;i++)
 	{
 		for(int j=0;j<m;j++)
-			printf("\t%d",(*this)(i,j));//p[i*m+j]);
+			printf("\t%lld",(*this)(i,j));//p[i*m+j]);
 		printf("\n");
 	}
 	printf("]\n");
@@ -107,7 +107,7 @@ const Matrix Matrix::identity()
 	return *this;
 }
 
-const Matrix Matrix::random(int max,int min)
+const Matrix Matrix::random(big max,big min)
 {
 	static bool seed=true;
 	if(seed)
@@ -175,7 +175,15 @@ const Matrix Matrix::getT() const
 const Matrix Matrix::expand(int l) const
 {
 	Matrix res(n,m*l);
-	int *pow2 = new int[l];	//Can be made more efficient
+//	big *pow2 = new big[l];	//Can be made more efficient
+	static big pow2[] = {1, 2, 4, 8, 16, 32,
+			64, 128, 256, 512, 1024, 2048, 4096,
+			8192, 16384, 32768, 65536, 131072,
+			262144, 524288, 1048576, 2097152,
+			4194304, 8388608, 16777216, 33554432,
+			67108864, 134217728, 268435456,
+			536870912, 1073741824, 2147483648,
+			4294967296};
 	pow2[0]=1;
 	for(int i=1;i<l;i++)
 		pow2[i]=2*pow2[i-1];
@@ -184,7 +192,7 @@ const Matrix Matrix::expand(int l) const
 		for(int j=0;j<l;j++)
 			res.p[l*i+j]=p[i]*pow2[j];
 	
-	delete [] pow2;
+//	delete [] pow2;
 //	res.print();
 	return res;
 }
@@ -192,7 +200,7 @@ const Matrix Matrix::expand(int l) const
 const Matrix Matrix::binexpand(int l) const
 {
 	Matrix res(n*l,m);
-	int temp;
+	big temp;
 	for(int i=0;i<n;i++)
 		for(int j=0;j<m;j++)
 		{
@@ -263,7 +271,7 @@ const Matrix Matrix::operator -=(const Matrix &m1) const
 const Matrix Matrix::operator *(const Matrix &mat) const
 {
 	Matrix res(n,mat.m);
-	int sum;
+	big sum;
 	for(int j=0;j<n;j++)
 		for(int k=0;k<mat.m;k++)
 		{
@@ -276,7 +284,7 @@ const Matrix Matrix::operator *(const Matrix &mat) const
 	return res;
 }
 
-const Matrix Matrix::operator *(int a) const
+const Matrix Matrix::operator *(const big a) const
 {
 	Matrix res(n,m);
 	for(int i=0;i<size;i++)
@@ -284,7 +292,7 @@ const Matrix Matrix::operator *(int a) const
 	return res;
 }
 
-const Matrix Matrix::operator *=(int a) const
+const Matrix Matrix::operator *=(const big a) const
 {
 	for(int i=0;i<size;i++)
 		p[i]*=a;
@@ -299,7 +307,7 @@ const Matrix Matrix::operator =(const Matrix &mat)
 	n=mat.n;
 	m=mat.m;
 	size=mat.size;//
-	p = new int[size];
+	p = new big[size];
 	for(int i=0;i<size;i++)
 		p[i]=mat.p[i];
 
@@ -325,14 +333,14 @@ const Matrix Matrix::operator ~() const
 	return res;
 }
 
-const Matrix Matrix::operator %(const int q) const
+const Matrix Matrix::operator %(const big q) const
 {
 	Matrix res(n,m);
-	int temp;
+	big temp;
 	for(int i=0;i<size;i++)
 	{
 		if(p[i]<0)
-			temp=p[i]+(1+(-p[i])/q)*q;
+			temp=q-((-p[i])%q);
 		else
 			temp=p[i]%q;
 		res.p[i]=temp;
@@ -340,7 +348,7 @@ const Matrix Matrix::operator %(const int q) const
 	return res;
 }
 
-const Matrix Matrix::operator /(const int w) const	//Rounding division to closest integer
+const Matrix Matrix::operator /(const big w) const	//Rounding division to closest integer
 {
 	Matrix res(n,m);
 	double temp;
@@ -348,7 +356,13 @@ const Matrix Matrix::operator /(const int w) const	//Rounding division to closes
 	{
 		temp=p[i];
 		temp/=w;
-		res.p[i]=(int)round(temp);
+//		res.p[i]=(big)round(temp);
+		res.p[i]=(big)floor(temp);
+		printf("%lf ",temp);
+//		if(temp-res.p[i]>0.5)
+//			res.p[i]+=1;
+//		else if(temp-res.p[i]==0.5)
+//			printf("Divide by w gave x.5\n");
 	}
 	return res;
 }

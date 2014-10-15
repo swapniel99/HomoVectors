@@ -9,18 +9,20 @@
 #define PARAMS_H_
 
 #include <climits>
-
+//
 //#define M 10
 //#define N 14
 //#define Q 46340
-//#define W 128
+//#define W 151
 //#define P 256
 
+//
 #define M 10
 #define N 14
 #define Q INT_MAX
 #define W 7759
-#define P 257
+#define P 256
+#define ER 2
 
 //#define M 10
 //#define N 14

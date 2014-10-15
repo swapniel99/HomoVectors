@@ -9,22 +9,22 @@
 #include <cstdio>
 #include <cmath>
 
-const Matrix makeswitch(const Matrix &S1,const Matrix &S2,int m, int n1, int n2, int q)
+const Matrix makeswitch(const Matrix &S1,const Matrix &S2,int m, int n1, int n2, big q)
 {
 	 int l=(int)ceil(log2(q));
 	 int nl=n1*l;
 	 Matrix A(n2-m,nl);
-	 A.random(12500000);		// Why modular product didn't work?
+	 A.random(/*12500000*/q);		// Why modular product didn't work?
 	 Matrix T = S2.getT();
 	 Matrix Sxp = S1.expand(l);
 	 Matrix E(m,nl);
 	 E.random(2,0);	//Some limit yet to be defined
 	 printf("Error added:\n");
 //	 E.print();
-	 return (((/*E+*/Sxp-(T*A)).vappend(A))%q);
+	 return (((E+Sxp-(T*A)).vappend(A))%q);
 }
 
-Scheme::Scheme(int m, int n, int p, int q, int w)// : S(m,n)
+Scheme::Scheme(int m, int n, big p, big q, big w)// : S(m,n)
 {
 	this->p=p;
 	this->m=m;
@@ -61,7 +61,7 @@ void Scheme::printkeys() const
 const Matrix transform(const Matrix &c, const Scheme &S1, const Scheme &S2) {return transform(getswitch(S1,S2),c,S1.q);}
 //Parameters have to be same
 
-const Matrix transform(const Matrix &M, const Matrix &c, int q) {return ((M*(c.binexpand((int)ceil(log2(q)))))%q);}
+const Matrix transform(const Matrix &M, const Matrix &c, big q) {return ((M*(c.binexpand((int)ceil(log2(q)))))%q);}
 
 const Matrix Scheme::Encrypt(const Matrix &x) {return transform(M,x*w,q);}
 
