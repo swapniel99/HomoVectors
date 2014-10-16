@@ -348,7 +348,7 @@ const Matrix Matrix::operator %(const big q) const
 	return res;
 }
 
-const Matrix Matrix::operator /(const big w) const	//Rounding division to closest integer
+const Matrix Matrix::operator /(const big w) const	//Flooring division to closest integer
 {
 	Matrix res(n,m);
 	double temp;
@@ -358,7 +358,7 @@ const Matrix Matrix::operator /(const big w) const	//Rounding division to closes
 		temp/=w;
 //		res.p[i]=(big)round(temp);
 		res.p[i]=(big)floor(temp);
-		printf("%lf ",temp);
+//		printf("%lf ",temp);
 //		if(temp-res.p[i]>0.5)
 //			res.p[i]+=1;
 //		else if(temp-res.p[i]==0.5)

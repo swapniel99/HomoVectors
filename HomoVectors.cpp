@@ -44,11 +44,11 @@ int main()
 	while(correct)
 	{
 		x.random(P);
-		printf("Plain text %d:\n",count);
-		x.print();
+//		printf("Plain text %d:\n",count);
+//		x.print();
 		c=S.Encrypt(x);
-		printf("Cipher text %d:\n",count);
-		c.print();
+//		printf("Cipher text %d:\n",count);
+//		c.print();
 		Acc=(Acc+x)%P;
 		CAcc=(CAcc+c)%Q;
 //		if(count%10==0)
@@ -58,8 +58,7 @@ int main()
 		printf("Sum from cipher %d:\n",count);
 		DCAcc=S.Decrypt(CAcc);
 		DCAcc.print();
-		correct = (Acc==DCAcc);
-		if(correct)
+		if(correct = (Acc==DCAcc))
 			printf("Sum is equal %d:\n",count);
 		else
 			printf("Sum is not equal %d:\n",count);
