@@ -22,7 +22,9 @@ public:
 	void printkeys() const;
 	const Matrix Encrypt(const Matrix &x);
 	const Matrix Decrypt(const Matrix &c);
+	const Matrix Recrypt(const Matrix &c);
 	friend const Matrix getswitch(const Scheme &S1,const Scheme &S2);
+	friend const Matrix transform(const Matrix &c, const Scheme &S1, const Scheme &S2);
 };
 
 const Matrix transform(const Matrix &M, const Matrix &c, int q);

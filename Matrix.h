@@ -13,14 +13,15 @@ class Matrix
 private:
 	int n,m;
 	int size;//
-//	int **p;
 	int *p;
 public:
 	Matrix();
 	Matrix(int n,int m);
 	Matrix(const Matrix &m1);
 	~Matrix();
+	inline int& operator ()(int i,int j) const;
 	void input();
+	void set(int i, int j, int val);
 	void print() const;
 	const Matrix identity();
 	const Matrix random(int max,int min=0);
@@ -31,16 +32,17 @@ public:
 	const Matrix binexpand(int l) const;
 	const Matrix operator |(const Matrix &m1) const;	//horizontal append
 	const Matrix operator +(const Matrix &m1) const;
+	const Matrix operator +=(const Matrix &m1) const;
 	const Matrix operator -(const Matrix &m1) const;
+	const Matrix operator -=(const Matrix &m1) const;
 	const Matrix operator *(const Matrix &m1) const;
 	const Matrix operator *(int a) const;
+	const Matrix operator *=(int a) const;
 	const Matrix operator =(const Matrix &mat);
 	bool operator ==(const Matrix &mat) const;
 	const Matrix operator ~() const;
 	const Matrix operator %(const int q) const;
 	const Matrix operator /(const int w) const; //Rounding division to closest number
-//	const int operator ()(int i,int j) const {return p[i][j];}
-	const int operator ()(int i,int j) const;
 };
 
 #endif /* MATRIX_H_ */

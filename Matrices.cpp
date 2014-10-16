@@ -11,8 +11,22 @@
 #include <ctime>
 #include <cstdlib>
 #include <unistd.h>
+//#include "params.h"
 #include "Matrix.h"
 //using namespace std;
+
+//int prod(int x,int n)
+//{
+//	int q=Q;
+//	if(n==0)
+//		return 0;
+//	int temp=prod(x,n/2);
+//	temp=(temp+temp)%q;
+//	if(n%2==0)
+//			return temp;
+//	else
+//			return ((x+temp)%q);
+//}
 
 Matrix::Matrix()
 {
@@ -26,15 +40,8 @@ Matrix::Matrix(int n,int m)
 	this->n=n;
 	this->m=m;
 	size=n*m;//
-//	p=new int*[n];
 	p=new int[size]();
 //	printf("arg constructor called.");
-//	for(int i=0;i<n;i++)
-//	{
-//		p[i]=new int[m];
-//		for(int j=0;j<m;j++)
-//			p[i][j]=0;
-//	}
 }
 
 Matrix::Matrix(const Matrix &m1)
@@ -42,15 +49,8 @@ Matrix::Matrix(const Matrix &m1)
 	n=m1.n;
 	m=m1.m;
 	size=m1.size;//
-//	p = new int*[n];
 	p = new int[size];
 	
-//	for(int i=0;i<n;i++)
-//	{
-//		p[i]=new int[m];
-//		for(int j=0;j<m;j++)
-//			p[i][j]=m1.p[i][j];
-//	}
 	for(int i=0;i<size;i++)
 		p[i]=m1.p[i];
 	
@@ -59,23 +59,22 @@ Matrix::Matrix(const Matrix &m1)
 
 Matrix::~Matrix()
 {
-//	for(int i=0;i<n;i++)
-//	{
-//		delete [] p[i];
-//	}
 	delete [] p;
 //	printf("Destructor called.\n");
 }
 
+inline int& Matrix::operator ()(int i,int j) const	{return p[i*m+j];}
+//This can be used anywhere, where element is accessed using coordinates. 
+//See a few functions below
+
 void Matrix::input()
 {
 	printf("Provide a %d x %d matrix:\n",n,m);
-//	for(int i=0;i<n;i++)
-//		for(int j=0;j<m;j++)
-//			scanf("%d",&p[i][j]);
 	for(int i=0;i<size;i++)
 		scanf("%d",p+i);
 }
+
+void Matrix::set(int i, int j, int val) {(*this)(i,j)=val;}
 
 void Matrix::print() const
 {
@@ -83,8 +82,7 @@ void Matrix::print() const
 	for(int i=0;i<n;i++)
 	{
 		for(int j=0;j<m;j++)
-//			printf("%d\t",p[i][j]);
-			printf("\t%d",p[i*m+j]);
+			printf("\t%d",(*this)(i,j));//p[i*m+j]);
 		printf("\n");
 	}
 	printf("]\n");
@@ -99,9 +97,11 @@ const Matrix Matrix::identity()
 			for(int j=0;j<m;j++)
 			{
 				if(i==j)
-					p[i*m+j]=1;
+					(*this)(i,j)=1;
+//					p[i*m+j]=1;
 				else
-					p[i*m+j]=0;
+					(*this)(i,j)=0;
+//					p[i*m+j]=0;
 			}
 	
 	return *this;
@@ -115,7 +115,6 @@ const Matrix Matrix::random(int max,int min)
 		srand(time(NULL));
 		seed=false;
 	}
-//	printf("seed = %u\n",seed);
 	for(int i=0;i<size;i++)
 		p[i]=(rand()%max)+min;
 	return *this;
@@ -153,9 +152,11 @@ const Matrix Matrix::happend(const Matrix &m1) const
 		for(int i=0;i<n;i++)
 		{
 			for(int j=0;j<m;j++)
-				res.p[i*res.m+j]=p[i*m+j];
+				res(i,j)=(*this)(i,j);
+//				res.p[i*res.m+j]=p[i*m+j];
 			for(int j=0;j<m1.m;j++)
-				res.p[i*res.m+m+j]=m1.p[i*m1.m+j];
+				res(i,j+m)=m1(i,j);
+//				res.p[i*res.m+m+j]=m1.p[i*m1.m+j];
 		}
 		return res;
 	}
@@ -166,14 +167,15 @@ const Matrix Matrix::getT() const
 	Matrix T(n,m-n);
 	for(int i=0;i<n;i++)
 		for(int j=n;j<m;j++)
-			T.p[i*T.m+j-n]=p[i*m+j];
+			T(i,j-n)=(*this)(i,j);
+//			T.p[i*T.m+j-n]=p[i*m+j];
 	return T;
 }
 
 const Matrix Matrix::expand(int l) const
 {
 	Matrix res(n,m*l);
-	int *pow2 = new int[l];
+	int *pow2 = new int[l];	//Can be made more efficient
 	pow2[0]=1;
 	for(int i=1;i<l;i++)
 		pow2[i]=2*pow2[i-1];
@@ -183,6 +185,7 @@ const Matrix Matrix::expand(int l) const
 			res.p[l*i+j]=p[i]*pow2[j];
 	
 	delete [] pow2;
+//	res.print();
 	return res;
 }
 
@@ -200,6 +203,7 @@ const Matrix Matrix::binexpand(int l) const
 				temp/=2;
 			}
 		}
+//	res.print();
 	return res;
 }
 
@@ -229,56 +233,44 @@ const Matrix Matrix::operator |(const Matrix &m1) const
 const Matrix Matrix::operator +(const Matrix &mat) const
 {
 	Matrix res(n,m);
-//	for(int i=0;i<n;i++)
-//		for(int j=0;j<m;j++)
-//			res.p[i][j] = this->p[i][j]+mat.p[i][j];
 	for(int i=0;i<size;i++)
 		res.p[i] = p[i]+mat.p[i];
 	return res;
 }
 
-const Matrix Matrix::operator -(const Matrix &mat) const
+const Matrix Matrix::operator +=(const Matrix &mat) const
+{
+	for(int i=0;i<size;i++)
+		p[i] += mat.p[i];
+	return (*this);
+}
+
+const Matrix Matrix::operator -(const Matrix &m1) const
 {
 	Matrix res(n,m);
-//	for(int i=0;i<n;i++)
-//		for(int j=0;j<m;j++)
-//			res.p[i][j] = this->p[i][j]+mat.p[i][j];
 	for(int i=0;i<size;i++)
-		res.p[i] = p[i]-mat.p[i];
+		res.p[i] = p[i]-m1.p[i];
 	return res;
 }
 
-//int prod(int x,int n,int q)
-//{
-//        if(n==0)
-//                return 0;
-//        int temp=prod(x,n/2,q);
-//        temp=(temp+temp)%q;
-//        if(n%2==0)
-//                return temp;
-//        else
-//                return ((x+temp)%q);
-//}
+const Matrix Matrix::operator -=(const Matrix &m1) const
+{
+	for(int i=0;i<size;i++)
+		p[i] -= m1.p[i];
+	return (*this);
+}
 
 const Matrix Matrix::operator *(const Matrix &mat) const
 {
 	Matrix res(n,mat.m);
 	int sum;
-//	for(int j=0;j<n;j++)
-//		for(int k=0;k<mat.m;k++)
-//		{
-//			sum=0;
-//			for(int i=0;i<m;i++)
-//				sum+=p[j][i]*mat.p[i][k];
-//			res.p[j][k]=sum;
-//		}
 	for(int j=0;j<n;j++)
 		for(int k=0;k<mat.m;k++)
 		{
 			sum=0;
 			for(int i=0;i<m;i++)
-//				sum=(sum+prod(p[j*m+i],mat.p[i*mat.m+k],32768))%32768;
 				sum+=p[j*m+i]*mat.p[i*mat.m+k];
+//				sum=(sum+prod(p[j*m+i],mat.p[i*mat.m+k]));
 			res.p[j*mat.m+k]=sum;
 		}
 	return res;
@@ -292,23 +284,21 @@ const Matrix Matrix::operator *(int a) const
 	return res;
 }
 
+const Matrix Matrix::operator *=(int a) const
+{
+	for(int i=0;i<size;i++)
+		p[i]*=a;
+	return (*this);
+}
+
 const Matrix Matrix::operator =(const Matrix &mat)
 {	
 //	printf("Assignment called.\n");
-//	for(int i=0;i<n;i++)
-//		delete [] p[i];
 	delete [] p;
 	
 	n=mat.n;
 	m=mat.m;
 	size=mat.size;//
-//	p = new int*[n];
-//	for(int i=0;i<n;i++)
-//	{
-//		p[i]=new int[m];
-//		for(int j=0;j<m;j++)
-//			p[i][j]=mat.p[i][j];
-//	}
 	p = new int[size];
 	for(int i=0;i<size;i++)
 		p[i]=mat.p[i];
@@ -363,4 +353,3 @@ const Matrix Matrix::operator /(const int w) const	//Rounding division to closes
 	return res;
 }
 
-const int Matrix::operator ()(int i,int j) const	{return p[i*m+j];}
