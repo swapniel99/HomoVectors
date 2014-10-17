@@ -33,17 +33,18 @@ public:
 	const Matrix binexpand(int l) const;
 	const Matrix operator |(const Matrix &m1) const;	//horizontal append
 	const Matrix operator +(const Matrix &m1) const;
-	const Matrix operator +=(const Matrix &m1) const;
+	const Matrix operator +=(const Matrix &m1);
 	const Matrix operator -(const Matrix &m1) const;
-	const Matrix operator -=(const Matrix &m1) const;
+	const Matrix operator -=(const Matrix &m1);
 	const Matrix operator *(const Matrix &m1) const;
 	const Matrix operator *(const big a) const;
-	const Matrix operator *=(const big a) const;
+	const Matrix operator *=(const big a);
 	const Matrix operator =(const Matrix &mat);
+	const Matrix operator ~() const;			//Transpose
+	const Matrix operator %(const big q) const;	//Modulo
+	const Matrix operator %=(const big q);
+	const Matrix operator /(const big w) const; //Flooring division
 	bool operator ==(const Matrix &mat) const;
-	const Matrix operator ~() const;
-	const Matrix operator %(const big q) const;
-	const Matrix operator /(const big w) const; //Rounding division to closest number
 };
 
 #endif /* MATRIX_H_ */

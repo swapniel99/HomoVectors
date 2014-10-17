@@ -11,9 +11,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <unistd.h>
-//#include "params.h"
 #include "Matrix.h"
-//using namespace std;
 
 //int prod(int x,int n)
 //{
@@ -175,7 +173,6 @@ const Matrix Matrix::getT() const
 const Matrix Matrix::expand(int l) const
 {
 	Matrix res(n,m*l);
-//	big *pow2 = new big[l];	//Can be made more efficient
 	static big pow2[] = {1, 2, 4, 8, 16, 32,
 			64, 128, 256, 512, 1024, 2048, 4096,
 			8192, 16384, 32768, 65536, 131072,
@@ -192,7 +189,6 @@ const Matrix Matrix::expand(int l) const
 		for(int j=0;j<l;j++)
 			res.p[l*i+j]=p[i]*pow2[j];
 	
-//	delete [] pow2;
 //	res.print();
 	return res;
 }
@@ -250,7 +246,7 @@ const Matrix Matrix::operator +(const Matrix &mat) const
 	return res;
 }
 
-const Matrix Matrix::operator +=(const Matrix &mat) const
+const Matrix Matrix::operator +=(const Matrix &mat)
 {
 	for(int i=0;i<size;i++)
 		p[i] += mat.p[i];
@@ -265,7 +261,7 @@ const Matrix Matrix::operator -(const Matrix &m1) const
 	return res;
 }
 
-const Matrix Matrix::operator -=(const Matrix &m1) const
+const Matrix Matrix::operator -=(const Matrix &m1)
 {
 	for(int i=0;i<size;i++)
 		p[i] -= m1.p[i];
@@ -283,7 +279,6 @@ const Matrix Matrix::operator *(const Matrix &mat) const
 			for(int i=0;i<m;i++)
 //				sum+=p[j*m+i] * mat.p[i*mat.m+k];
 				sum+=(*this)(j,i)*mat(i,k);
-//				sum=(sum+prod(p[j*m+i],mat.p[i*mat.m+k]));
 //			res.p[j*res.m+k]=sum;
 			res(j,k)=sum;
 		}
@@ -298,7 +293,7 @@ const Matrix Matrix::operator *(const big a) const
 	return res;
 }
 
-const Matrix Matrix::operator *=(const big a) const
+const Matrix Matrix::operator *=(const big a)
 {
 	for(int i=0;i<size;i++)
 		p[i]*=a;
@@ -320,14 +315,6 @@ const Matrix Matrix::operator =(const Matrix &mat)
 	return *this;
 }
 
-bool Matrix::operator ==(const Matrix &mat) const
-{
-	for(int i=0;i<size;i++)
-		if(p[i]!=mat.p[i])
-			return false;
-	return true;
-}
-
 const Matrix Matrix::operator ~() const
 {
 	Matrix res(m,n);
@@ -343,16 +330,26 @@ const Matrix Matrix::operator ~() const
 const Matrix Matrix::operator %(const big q) const
 {
 	Matrix res(n,m);
-	big temp;
 	for(int i=0;i<size;i++)
 	{
 		if(p[i]<0)
-			temp=q-((-p[i])%q);
+			res.p[i]=q-((-p[i])%q);
 		else
-			temp=p[i]%q;
-		res.p[i]=temp;
+			res.p[i]=p[i]%q;
 	}
 	return res;
+}
+
+const Matrix Matrix::operator %=(const big q)
+{
+	for(int i=0;i<size;i++)
+	{
+		if(p[i]<0)
+			p[i]=q-((-p[i])%q);
+		else
+			p[i]=p[i]%q;
+	}
+	return (*this);
 }
 
 const Matrix Matrix::operator /(const big w) const	//Flooring division to closest integer
@@ -365,7 +362,6 @@ const Matrix Matrix::operator /(const big w) const	//Flooring division to closes
 		temp/=w;
 //		res.p[i]=(big)round(temp);
 		res.p[i]=(big)floor(temp);
-//		printf("%lf ",temp);
 //		if(temp-res.p[i]>0.5)
 //			res.p[i]+=1;
 //		else if(temp-res.p[i]==0.5)
@@ -374,3 +370,10 @@ const Matrix Matrix::operator /(const big w) const	//Flooring division to closes
 	return res;
 }
 
+bool Matrix::operator ==(const Matrix &mat) const
+{
+	for(int i=0;i<size;i++)
+		if(p[i]!=mat.p[i])
+			return false;
+	return true;
+}

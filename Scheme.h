@@ -18,7 +18,7 @@ private:
 
 	Matrix S,M;	//The pvt key, public key
 public:
-	Scheme() {p=m=q=n=w=0;}
+	Scheme();
 	Scheme(int m, int n, big p, big q, big w);
 	void setkey(const Matrix &S);
 	void printkeys() const;
@@ -30,5 +30,6 @@ public:
 };
 
 const Matrix transform(const Matrix &M, const Matrix &c, big q);
+const Matrix makeswitch(const Matrix &S1,const Matrix &S2,int m, int n1, int n2, big q);
 
 #endif /* SCHEME_H_ */
