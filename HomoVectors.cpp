@@ -36,7 +36,7 @@ int main()
 {
 	Matrix Acc(M,1), CAcc(N,1), x(M,1), c, DCAcc;
 	Scheme S(M,N,P,Q,W);
-//	S.printkeys();
+	S.printkeys();
 
 	bool correct=true;
 	int count = 1;
@@ -51,8 +51,8 @@ int main()
 //		c.print();
 		Acc=(Acc+x)%P;
 		CAcc=(CAcc+c)%Q;
-//		if(count%10==0)
-//		CAcc=S.Recrypt(CAcc);
+//		if(count%50==0)
+//			CAcc=S.Recrypt(CAcc);
 		printf("Original sum %d:\n",count);
 		Acc.print();
 		printf("Sum from cipher %d:\n",count);

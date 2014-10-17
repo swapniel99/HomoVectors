@@ -204,10 +204,12 @@ const Matrix Matrix::binexpand(int l) const
 	for(int i=0;i<n;i++)
 		for(int j=0;j<m;j++)
 		{
-			temp=p[i*m+j];
+//			temp=p[i*m+j];
+			temp=(*this)(i,j);
 			for(int k=0;k<l;k++)
 			{
-				res.p[(i*l+k)*res.m+j]=temp%2;
+//				res.p[(i*l+k)*res.m+j]=temp%2;
+				res(i*l+k,j)=temp%2;
 				temp/=2;
 			}
 		}
@@ -230,9 +232,11 @@ const Matrix Matrix::operator |(const Matrix &m1) const
 		for(int i=0;i<n;i++)
 		{
 			for(int j=0;j<m;j++)
-				res.p[i*res.m+j]=p[i*m+j];
+//				res.p[i*res.m+j]=p[i*m+j];
+				res(i,j)=(*this)(i,j);
 			for(int j=0;j<m1.m;j++)
-				res.p[i*res.m+m+j]=m1.p[i*m1.m+j];
+//				res.p[i*res.m+m+j]=m1.p[i*m1.m+j];
+				res(i,m+j)=m1(i,j);
 		}
 		return res;
 	}
@@ -277,9 +281,11 @@ const Matrix Matrix::operator *(const Matrix &mat) const
 		{
 			sum=0;
 			for(int i=0;i<m;i++)
-				sum+=p[j*m+i]*mat.p[i*mat.m+k];
+//				sum+=p[j*m+i] * mat.p[i*mat.m+k];
+				sum+=(*this)(j,i)*mat(i,k);
 //				sum=(sum+prod(p[j*m+i],mat.p[i*mat.m+k]));
-			res.p[j*mat.m+k]=sum;
+//			res.p[j*res.m+k]=sum;
+			res(j,k)=sum;
 		}
 	return res;
 }
@@ -328,7 +334,8 @@ const Matrix Matrix::operator ~() const
 	for(int i=0;i<n;i++)
 		for(int j=0;j<m;j++)
 //			res.p[j][i]=p[i][j];
-			res.p[j*n+i]=p[i*m+j];
+//			res.p[j*n+i]=p[i*m+j];
+			res(j,i)=(*this)(i,j);
 	
 	return res;
 }
