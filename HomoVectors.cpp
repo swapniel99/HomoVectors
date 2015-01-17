@@ -15,14 +15,13 @@ void encdec()
 	Scheme S(M,N,P,Q,W);
 	S.printkeys();
 	Matrix x(M,1);
-	x.random(P);
-	x.set(0,0,0);
-	x.set(1,0,300);
+//	x.random(P);
+	x.set(0,0,1);
 	printf("Plain text:\n");
 	x.print();
 	Matrix c=S.Encrypt(x);
-//	printf("Cipher text:\n");
-//	c.print();
+	printf("Cipher text:\n");
+	c.print();
 	Matrix x1=S.Decrypt(c);
 	x1.print();
 	if(x==x1)
@@ -38,7 +37,7 @@ void countadditions()
 //	S.printkeys();
 
 	bool correct=true;
-	int count = 1;
+	long long int count = 1;
 
 	while(correct)
 	{
@@ -61,9 +60,9 @@ void countadditions()
 //		printf("Sum from cipher %d:\n",count);
 //		DCAcc.print();
 		if(!(correct = (Acc==DCAcc)))
-			printf("\nSum is not equal %d:\n",count);
+			printf("\nSum is not equal %lld:\n",count);
 //		else
-//			printf("Sum is equal %d:\n",count);
+//			printf("Sum is equal %lld:\n",count);
 		count++;
 	}
 }
@@ -102,6 +101,6 @@ int addition()
 
 int main()
 {
-	countadditions();
+	encdec();
 	return 0;
 }

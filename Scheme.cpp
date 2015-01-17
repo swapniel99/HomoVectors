@@ -76,7 +76,7 @@ const Matrix makeswitch(const Matrix &S1,const Matrix &S2,int m, int n1, int n2,
 	 Matrix A(n2-m,n1l);
 	 A.random(q);		// Why modular product didn't work?
 	 Matrix E(m,n1l);
-	 E.random(5);
+	 E.random(3,-1);
 //	 printf("Error added:\n");
 //	 E.print();
 	 return (((E+S1.expand(l)-(S2.getT()*A)).vappend(A))%q);

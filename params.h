@@ -11,7 +11,7 @@
 #include <climits>
 
 #define M 8
-#define N 16
+#define N 10
 #define Q 2147483648
 #define W 8388608    //4194304
 #define P 256

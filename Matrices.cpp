@@ -362,8 +362,8 @@ const Matrix Matrix::operator /(const big w) const	//Flooring division to closes
 		temp/=w;
 //		res.p[i]=(big)round(temp);
 		res.p[i]=(big)floor(temp);
-//		if(temp-res.p[i]>0.5)
-//			res.p[i]+=1;
+		if(temp-res.p[i]>0.5)
+			res.p[i]+=1;
 //		else if(temp-res.p[i]==0.5)
 //			printf("Divide by w gave x.5\n");
 	}
