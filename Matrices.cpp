@@ -7,24 +7,12 @@
 //============================================================================
 
 #include <cstdio>
+#include <gmp.h>
 #include <cmath>
 #include <ctime>
 #include <cstdlib>
 #include <unistd.h>
 #include "Matrix.h"
-
-//int prod(int x,int n)
-//{
-//	int q=Q;
-//	if(n==0)
-//		return 0;
-//	int temp=prod(x,n/2);
-//	temp=(temp+temp)%q;
-//	if(n%2==0)
-//			return temp;
-//	else
-//			return ((x+temp)%q);
-//}
 
 Matrix::Matrix()
 {
@@ -61,7 +49,10 @@ Matrix::~Matrix()
 //	printf("Destructor called.\n");
 }
 
-inline big& Matrix::operator ()(int i,int j) const	{return p[i*m+j];}
+inline big& Matrix::operator ()(int i,int j) const
+{
+	return p[i*m+j];
+}
 //This can be used anywhere, where element is accessed using coordinates. 
 //See a few functions below
 
@@ -69,10 +60,13 @@ void Matrix::input()
 {
 	printf("Provide a %d x %d matrix:\n",n,m);
 	for(int i=0;i<size;i++)
-		scanf("%lld",p+i);
+		cin>>p[i];
 }
 
-void Matrix::set(int i, int j, big val) {(*this)(i,j)=val;}
+void Matrix::set(int i, int j, const big &val)
+{
+	(*this)(i,j)=val;
+}
 
 void Matrix::print() const
 {
@@ -80,7 +74,8 @@ void Matrix::print() const
 	for(int i=0;i<n;i++)
 	{
 		for(int j=0;j<m;j++)
-			printf("\t%lld",(*this)(i,j));//p[i*m+j]);
+			cout<<"\t"<<(*this)(i,j);
+//			printf("\t%lld",(*this)(i,j));
 		printf("\n");
 	}
 	printf("]\n");
@@ -105,7 +100,7 @@ const Matrix Matrix::identity()
 	return *this;
 }
 
-const Matrix Matrix::random(big max,big min)
+const Matrix Matrix::random(const big &max,const big &min)
 {
 	static bool seed=true;
 	if(seed)
@@ -173,21 +168,27 @@ const Matrix Matrix::getT() const
 const Matrix Matrix::expand(int l) const
 {
 	Matrix res(n,m*l);
-	static big pow2[] = {1, 2, 4, 8, 16, 32,
-			64, 128, 256, 512, 1024, 2048, 4096,
-			8192, 16384, 32768, 65536, 131072,
-			262144, 524288, 1048576, 2097152,
-			4194304, 8388608, 16777216, 33554432,
-			67108864, 134217728, 268435456,
-			536870912, 1073741824, 2147483648,
-			4294967296};
-	pow2[0]=1;
-	for(int i=1;i<l;i++)
-		pow2[i]=2*pow2[i-1];
-	
+//	static big pow2[] = {1, 2, 4, 8, 16, 32,
+//			64, 128, 256, 512, 1024, 2048, 4096,
+//			8192, 16384, 32768, 65536, 131072,
+//			262144, 524288, 1048576, 2097152,
+//			4194304, 8388608, 16777216, 33554432,
+//			67108864, 134217728, 268435456,
+//			536870912, 1073741824, 2147483648,
+//			4294967296};
+//	pow2[0]=1;
+//	for(int i=1;i<l;i++)
+//		pow2[i]=pow2[i-1]<<1;
+	big pow2;
 	for(int i=0;i<size;i++)
+	{	
+		pow2=1;
 		for(int j=0;j<l;j++)
-			res.p[l*i+j]=p[i]*pow2[j];
+		{
+			res.p[l*i+j]=p[i]*pow2;
+			pow2<<=1;
+		}
+	}
 	
 //	res.print();
 	return res;
@@ -285,7 +286,7 @@ const Matrix Matrix::operator *(const Matrix &mat) const
 	return res;
 }
 
-const Matrix Matrix::operator *(const big a) const
+const Matrix Matrix::operator *(const big &a) const
 {
 	Matrix res(n,m);
 	for(int i=0;i<size;i++)
@@ -293,7 +294,7 @@ const Matrix Matrix::operator *(const big a) const
 	return res;
 }
 
-const Matrix Matrix::operator *=(const big a)
+const Matrix Matrix::operator *=(const big &a)
 {
 	for(int i=0;i<size;i++)
 		p[i]*=a;
@@ -327,7 +328,7 @@ const Matrix Matrix::operator ~() const
 	return res;
 }
 
-const Matrix Matrix::operator %(const big q) const
+const Matrix Matrix::operator %(const big &q) const
 {
 	Matrix res(n,m);
 	for(int i=0;i<size;i++)
@@ -340,7 +341,7 @@ const Matrix Matrix::operator %(const big q) const
 	return res;
 }
 
-const Matrix Matrix::operator %=(const big q)
+const Matrix Matrix::operator %=(const big &q)
 {
 	for(int i=0;i<size;i++)
 	{
@@ -352,10 +353,10 @@ const Matrix Matrix::operator %=(const big q)
 	return (*this);
 }
 
-const Matrix Matrix::operator /(const big w) const	//Flooring division to closest integer
+const Matrix Matrix::operator /(const big &w) const	//Flooring division to closest integer
 {
 	Matrix res(n,m);
-	double temp;
+	mpf_class temp;
 	for(int i=0;i<size;i++)
 	{
 		temp=p[i];

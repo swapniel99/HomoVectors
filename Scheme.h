@@ -19,7 +19,7 @@ private:
 	Matrix S,M;	//The pvt key, public key
 public:
 	Scheme();
-	Scheme(int m, int n, big p, big q, big w);
+	Scheme(int m, int n, const big &p, const big &q, const big &w);
 	void setkey(const Matrix &S);
 	void printkeys() const;
 	const Matrix Encrypt(const Matrix &x) const;
@@ -29,7 +29,7 @@ public:
 	friend const Matrix transform(const Matrix &c, const Scheme &S1, const Scheme &S2);
 };
 
-const Matrix transform(const Matrix &M, const Matrix &c, big q);
-const Matrix makeswitch(const Matrix &S1,const Matrix &S2,int m, int n1, int n2, big q);
+const Matrix transform(const Matrix &M, const Matrix &c, const big &q);
+const Matrix makeswitch(const Matrix &S1,const Matrix &S2,int m, int n1, int n2, const big &q);
 
 #endif /* SCHEME_H_ */

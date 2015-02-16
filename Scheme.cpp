@@ -9,9 +9,23 @@
 #include <cstdio>
 #include <cmath>
 
-Scheme::Scheme() {p=q=w=m=n=0;}
+inline int ceillog2(big x)
+{
+  int ans=0;
+  big e = 1;
+  while(e<x){
+	  e<<=1;
+	  ans++;
+  }
+  return ans;
+}
 
-Scheme::Scheme(int m, int n, big p, big q, big w)// : S(m,n)
+Scheme::Scheme()
+{
+	p=q=w=m=n=0;
+}
+
+Scheme::Scheme(int m, int n, const big &p, const big &q, const big &w)// : S(m,n)
 {
 	this->p=p;
 	this->m=m;
@@ -44,13 +58,21 @@ void Scheme::printkeys() const
 	M.print();
 }
 
-const Matrix Scheme::Encrypt(const Matrix &x) const {return transform(M,x*w,q);}
+const Matrix Scheme::Encrypt(const Matrix &x) const 
+{
+	return transform(M,x*w,q);
+}
 
-const Matrix Scheme::Decrypt(const Matrix &c) const //{return (((S*c)%q)/w);}
-{return ((((S*c)%q)/w)%p);}
-//Why there is no need of %p ?
+const Matrix Scheme::Decrypt(const Matrix &c) const
+{
+	return ((((S*c)%q)/w)%p);
+}
+//Is %p needed?
 
-const Matrix Scheme::Recrypt(const Matrix &c) const {return Encrypt(Decrypt(c));}
+const Matrix Scheme::Recrypt(const Matrix &c) const 
+{
+	return Encrypt(Decrypt(c));
+}
 
 const Matrix getswitch(const Scheme &S1, const Scheme &S2)
 {
@@ -64,14 +86,20 @@ const Matrix getswitch(const Scheme &S1, const Scheme &S2)
 	 }
 }
 
-const Matrix transform(const Matrix &c, const Scheme &S1, const Scheme &S2) {return transform(getswitch(S1,S2),c,S1.q);}
+const Matrix transform(const Matrix &c, const Scheme &S1, const Scheme &S2) 
+{
+	return transform(getswitch(S1,S2),c,S1.q);
+}
 //Parameters have to be same
 
-const Matrix transform(const Matrix &M, const Matrix &c, big q) {return ((M*(c.binexpand((int)ceil(log2(q)))))%q);}
-
-const Matrix makeswitch(const Matrix &S1,const Matrix &S2,int m, int n1, int n2, big q)
+const Matrix transform(const Matrix &M, const Matrix &c, const big &q) 
 {
-	 int l=(int)ceil(log2(q));
+	return ((M*(c.binexpand(ceillog2(q))))%q);
+}
+
+const Matrix makeswitch(const Matrix &S1,const Matrix &S2,int m, int n1, int n2, const big &q)
+{
+	 int l=ceillog2(q);
 	 int n1l=n1*l;
 	 Matrix A(n2-m,n1l);
 	 A.random(q);		// Why modular product didn't work?
@@ -81,5 +109,3 @@ const Matrix makeswitch(const Matrix &S1,const Matrix &S2,int m, int n1, int n2,
 //	 E.print();
 	 return (((E+S1.expand(l)-(S2.getT()*A)).vappend(A))%q);
 }		/*	   E+	 S*				-TA							*/
-
-
