@@ -15,7 +15,6 @@
 using namespace std;
 
 typedef mpz_class big;
-
 // Assumption: Size of the matrices are well into int. And values have int number of bits.
 
 class Matrix

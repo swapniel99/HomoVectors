@@ -10,12 +10,13 @@
 
 #include <climits>
 
+// Below parameters allow roughly 0.7 million additions in 4 mins.
 #define M 8
 #define N 10
-#define Q 2147483648
+//#define Q 2147483648
 #define W 8388608    //4194304
 #define P 256
-//#define ER 2
+
 
 #ifndef Q
 #define Q INT_MAX // = 2^31 - 1 = 2147483647
